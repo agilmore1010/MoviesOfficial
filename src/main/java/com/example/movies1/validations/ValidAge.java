@@ -12,7 +12,8 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = AgeValidator.class)
 public @interface ValidAge {
-    String message() default "You must be older than 10 years old to register!";
+    String message() default "You must be older than 13 years old to register!";
+    int minAge() default 13;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

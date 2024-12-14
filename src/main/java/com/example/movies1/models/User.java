@@ -1,10 +1,13 @@
 package com.example.movies1.models;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.example.movies1.validations.ValidAge;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +25,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import com.example.movies1.validations.ValidAge;
 
 
 @Entity
@@ -56,25 +57,25 @@ public class User {
 	private String confirm;
 	
 	@NotNull(message = "Birthdate is required")
-	@ValidAge (message = "You must be older than 10 years old to register!")
+	@ValidAge (minAge = 13) 
 	@DateTimeFormat(pattern="yyyy-MM-dd")
-	private Date birthdate;
+	private LocalDate birthdate;
 	
 	@Column(updatable=false)
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
     
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
     
     @ManyToMany(mappedBy = "usersWhoHaveSeen", fetch = FetchType.LAZY)
@@ -132,27 +133,27 @@ public class User {
 		this.confirm = confirm;
 	}
 
-	public Date getBirthdate() {
+	public LocalDate getBirthdate() {
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(LocalDate birthdate) {
 		this.birthdate = birthdate;
 	}
 
-	public Date getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

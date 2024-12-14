@@ -66,6 +66,8 @@ public class Movie {
     @Column(nullable = true)
     private String sGenre;
 
+    private String posterUrl;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "movie_users", // Define the join table
@@ -212,6 +214,14 @@ public class Movie {
 
     public void setSGenre(String sGenre) {
         this.sGenre = sGenre;
+    }
+
+    public String getPosterUrl(){
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl){
+        this.posterUrl = posterUrl;
     }
 
     public String getMovieRating(){

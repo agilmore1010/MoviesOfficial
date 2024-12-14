@@ -97,6 +97,12 @@ body {
 						<form:input class="form-control" path="director" placeholder="Enter director name" required="required" />
 						<form:errors class="text-danger" path="director" />
 					</div>
+					<div class="form-group">
+                        <form:label path="posterUrl">Movie Poster:</form:label>
+                        <input type="text" id="posterUrl" name="posterUrl" class="form-control"
+                            placeholder="Search for a movie poster..." />
+                        <div class="image-container" id="imageResults"></div>
+                    </div>
 					<button type="submit" class="btn btn-custom btn-block">Update Movie</button>
 				</form:form>
 			</div>

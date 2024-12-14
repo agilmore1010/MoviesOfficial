@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.movies1.comparators.MovieTitleComparator;
 import com.example.movies1.models.Comment;
 import com.example.movies1.models.Genre;
 import com.example.movies1.models.Movie;
 import com.example.movies1.models.User;
+import com.example.movies1.repositories.MovieRepository;
 import com.example.movies1.services.GenreService;
 import com.example.movies1.services.MovieService;
 import com.example.movies1.services.UserService;
@@ -39,6 +41,12 @@ public class MovieController {
 
     @Autowired
     private GenreService genres;
+
+    @Autowired
+    private MovieRepository mRepo;
+
+    public MovieController() {
+    }
 
     private Long getLoggedInUserId(HttpSession session) {
         return (Long) session.getAttribute("userId");
@@ -131,6 +139,7 @@ public class MovieController {
         if (movie == null) {
             return "redirect:/genres";
         }
+        
         if (!model.containsAttribute("commentForm")) {
             model.addAttribute("commentForm", new Comment());
         }
@@ -141,8 +150,6 @@ public class MovieController {
         // Debug logged-in user ID and movie owner ID
         Long loggedInUserId = getLoggedInUserId(session);
         Long movieOwnerId = movie.getUser().getId();
-        System.out.println("Logged-in User ID: " + loggedInUserId);
-        System.out.println("Movie Owner ID: " + movieOwnerId);
 
         model.addAttribute("user", users.getLoggedInUser(loggedInUserId).orElse(null));
         model.addAttribute("isOwner", loggedInUserId.equals(movieOwnerId));
@@ -262,7 +269,7 @@ public class MovieController {
             @RequestParam(required = false) String movieRating,
             @RequestParam(required = false) String leadActor,
             @RequestParam(required = false) Integer releaseYear,
-			@RequestParam(required = false) Integer rating,
+            @RequestParam(required = false) Integer rating,
             @RequestParam(required = false) String director,
             @RequestParam(required = false) String user,
             @RequestParam(required = false) String timeLength,
@@ -279,6 +286,166 @@ public class MovieController {
             redirectAttributes.addFlashAttribute("message", "No movies found for the selected criteria.");
             return "redirect:/genres"; // Redirect to the movies page with a message
         }
+    }
+
+    // Handle movies by release year
+    @GetMapping("/movies/byReleaseYear")
+    public String getMoviesByReleaseYear(@RequestParam int releaseYear, Model model, HttpSession session) {
+        // Fetch movies for the specified release year
+        List<Movie> movies = mRepo.findByReleaseYear(releaseYear);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("releaseYear", releaseYear);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "releaseYear";  // This will be a new JSP page
+    }
+    @GetMapping("/movies/byDirector")
+    public String getMoviesByDirector(@RequestParam String director, Model model, HttpSession session) {
+        // Fetch movies for the specified director
+        List<Movie> movies = mRepo.findByDirector(director);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("director", director);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "director";  // This will be a new JSP page
+    }
+        @GetMapping("/movies/byLeadActor")
+    public String getMoviesByLeadActor(@RequestParam String leadActor, Model model, HttpSession session) {
+        // Fetch movies for the specified release year
+        List<Movie> movies = mRepo.findByLeadActor(leadActor);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("leadActor", leadActor);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "leadActor";  // This will be a new JSP page
+    }
+    @GetMapping("/movies/byTimeLength")
+    public String getMoviesByTimeLength(@RequestParam String timeLength, Model model, HttpSession session) {
+        // Fetch movies for the specified release year
+        List<Movie> movies = mRepo.findByTimeLength(timeLength);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("timeLength", timeLength);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "timeLength";  // This will be a new JSP page
+    }
+
+    @GetMapping("/movies/byMovieRating")
+    public String getMoviesByMovieRating(@RequestParam String movieRating, Model model, HttpSession session) {
+        // Fetch movies for the specified movie rating
+        List<Movie> movies = mRepo.findByMovieRating(movieRating);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("movieRating",movieRating);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "movieRating";  // This will be a new JSP page
+    }
+
+    @GetMapping("/movies/byRating")
+    public String getMoviesByRating(@RequestParam int rating, Model model, HttpSession session) {
+        // Fetch movies for the specified rating
+        List<Movie> movies = mRepo.findByRating(rating);
+        
+        // Sort movies alphabetically using the MovieTitleComparator
+        movies.sort(new MovieTitleComparator());
+        
+        // Get counts
+        long movieCount = movies.size(); // Count of movies released in the specified year
+        long totalMovieCount = mRepo.countTotalMovies(); // Total count of all movies
+
+        Long previousMovieId = (Long) session.getAttribute("previousMovieId");
+        model.addAttribute("previousMovieId", previousMovieId);
+
+        session.setAttribute("previousMovieId",movies.isEmpty() ? null : movies.get(0).getId());
+
+        // Add attributes to the model
+        model.addAttribute("movies", movies);
+        model.addAttribute("rating", rating);
+        model.addAttribute("movieCount", movieCount); // Count of movies for the specified year
+        model.addAttribute("totalMovieCount", totalMovieCount); // Total count of all movies
+        model.addAttribute("genres", genres.getAllGenres());
+
+        return "rating";  // This will be a new JSP page
     }
 
 }

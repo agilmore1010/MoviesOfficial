@@ -1,23 +1,28 @@
 package com.example.movies1.validations;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.Period;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class AgeValidator implements ConstraintValidator<ValidAge, Date> {
+public class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
+
+    private int minAge;
 
     @Override
-    public boolean isValid(Date birthdate, ConstraintValidatorContext context) {
+    public void initialize(ValidAge constraintAnnotation){
+        this.minAge = constraintAnnotation.minAge();
+    }
+
+    @Override
+    public boolean isValid(LocalDate birthdate, ConstraintValidatorContext context) {
         if (birthdate == null) {
-            return true; // Let other validations handle null checks
+            return false; 
         }
         
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(birthdate);
-        calendar.add(Calendar.YEAR, 10); // Add 10 years to the birthdate
+        int age = Period.between(birthdate, LocalDate.now()).getYears();
 
-        return calendar.before(new Date()); // Check if the date is before today
+        return age >= minAge;
     }
 }

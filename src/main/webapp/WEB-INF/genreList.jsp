@@ -78,6 +78,11 @@
         .genre-list a.thriller:hover{
             background-color: rgb(47, 29, 33);
         }
+
+        .genre-list a.dark:hover{
+            background-color: black;
+        }
+
         .btn-custom {
             background-color: #007bff;
             color: #fff;
@@ -117,7 +122,7 @@
                     <a href="${pageContext.request.contextPath}/genres/${genre.id}" 
                         class="${genre.name eq 'Action' ? 'action' :''} ${genre.name eq 'Horror' ? 'horror' : ''}${genre.name eq 'Romance' ? 'romance' : ''}${genre.name eq 'Comedy' ? 'comedy' : ''}${genre.name eq 'Family' ? 'family' : ''}
                         ${genre.name eq 'Holiday' ? 'holiday' : ''} ${genre.name eq 'Drama' ? 'drama' :''}${genre.name eq 'Musical' ? 'musical' :''} ${genre.name eq 'Children' ? 'children' : ''} ${genre.name eq 'Scifi' ? 'scifi' :''}
-                        ${genre.name eq 'Thriller'?'thriller' : ''}" >
+                        ${genre.name eq 'Thriller'?'thriller' : ''} ${genre.name eq 'Dark' ? 'dark': ''}" >
                         ${genre.name}
                     </a>
                 </li>

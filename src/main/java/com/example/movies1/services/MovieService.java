@@ -155,4 +155,28 @@ public class MovieService {
     public long countTotaMovies (){
         return mRepo.count();
     }
+
+    public List<Movie> findMoviesByReleaseYear(int releaseYear){
+        return mRepo.findByReleaseYear(releaseYear);
+    }
+
+    public List <Movie> findMoviesByRating(int rating){
+        return mRepo.findByRating(rating);
+    }
+
+    public List <Movie> findMoviesByMovieRating(String movieRating){
+        return mRepo.findByMovieRating(movieRating);
+    }
+
+    public List <Movie> findMoviesByTimeLength(String timeLength){
+        return mRepo.findByTimeLength(timeLength);
+    }
+
+    public List <Movie> findMoviesByLeadActor(String leadActor){
+        return mRepo.findByLeadActor(leadActor);
+    }
+
+    public List <Movie> findMoviesByDirector(String director){
+        return mRepo.findByDirector(director);
+    }
 }
